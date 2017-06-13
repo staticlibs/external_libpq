@@ -1,0 +1,3 @@
+[submodule "postgresql"]
+	path = postgresql
+	url = https://github.com/ojdkbuild/lookaside_postgresql.git
