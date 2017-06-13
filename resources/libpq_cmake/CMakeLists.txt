@@ -41,6 +41,16 @@ endif ( )
 if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "linux_amd64_[^_]+" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_linux_amd64 )
+endif ( )
+
+if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "android_armeabi_[^_]+" )
+    set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
+            ${CMAKE_CURRENT_LIST_DIR}/../include_android_armeabi )
+    set ( ${PROJECT_NAME}_PLATFORM_SRC
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/snprintf.c )
+endif ( )
+
+if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "(linux|android)_[^_]+_[^_]+" )
     set ( ${PROJECT_NAME}_PLATFORM_DEFINITIONS
             -D_REENTRANT
             -D_THREAD_SAFE
@@ -97,7 +107,8 @@ add_library ( ${PROJECT_NAME} STATIC
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/backend/libpq/ip.c
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/backend/libpq/md5.c
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/backend/utils/mb/encnames.c
-        ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/backend/utils/mb/wchar.c )
+        ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/backend/utils/mb/wchar.c
+        ${${PROJECT_NAME}_PLATFORM_SRC} )
 
 target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE
         ${${PROJECT_NAME}_SOURCE_DIR}
