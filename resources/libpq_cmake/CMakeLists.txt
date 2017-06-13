@@ -54,6 +54,8 @@ endif ( )
 # copy headers
 file ( COPY
         ${${PROJECT_NAME}_SOURCE_DIR}/libpq-fe.h
+        ${${PROJECT_NAME}_INCLUDE_DIR}/postgres_ext.h
+        ${${PROJECT_NAME}_INCLUDE_DIR}/libpq
         ${${PROJECT_NAME}_PLATFORM_INCLUDE_DIR}/pg_config.h
         ${${PROJECT_NAME}_PLATFORM_INCLUDE_DIR}/pg_config_ext.h
         ${${PROJECT_NAME}_PLATFORM_INCLUDE_DIR}/pg_config_os.h

@@ -31,7 +31,7 @@ add_custom_target ( ${PROJECT_NAME} DEPENDS pq )
 
 # pkg-config
 set ( ${PROJECT_NAME}_MODULE libpq )
-set ( ${PROJECT_NAME}_PC_CFLAGS "-I${CMAKE_CURRENT_BINARY_DIR}/libpq/include -I${CMAKE_CURRENT_LIST_DIR}/postgresql/src/include" )
+set ( ${PROJECT_NAME}_PC_CFLAGS "-I${CMAKE_CURRENT_BINARY_DIR}/libpq/include" )
 set ( ${PROJECT_NAME}_PC_LIBS "-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY} -lpq" )
 if ( STATICLIB_TOOLCHAIN MATCHES "linux_[^_]+_[^_]+" )
     set ( ${PROJECT_NAME}_PC_LIBS "${${PROJECT_NAME}_PC_LIBS} -lpthread" )
