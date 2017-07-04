@@ -41,13 +41,34 @@ endif ( )
 if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "linux_amd64_[^_]+" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_linux_amd64 )
-endif ( )
-
-if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "android_armeabi_[^_]+" )
+elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "android_armeabi_[^_]+" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_android_armeabi )
     set ( ${PROJECT_NAME}_PLATFORM_SRC
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/snprintf.c )
+elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_i386_msvc" )
+    set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
+            ${CMAKE_CURRENT_LIST_DIR}/../include_windows_i386 )
+elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_amd64_msvc" )
+    set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
+            ${CMAKE_CURRENT_LIST_DIR}/../include_windows_amd64 )           
+endif ( )
+
+if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
+    set ( ${PROJECT_NAME}_PLATFORM_SRC
+            ${${PROJECT_NAME}_SOURCE_DIR}/win32.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/pthread-win32.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/getaddrinfo.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/inet_aton.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/crypt.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/snprintf.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/dirent.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/dirmod.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/pgsleep.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/open.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/system.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/win32error.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/win32setlocale.c ) 
 endif ( )
 
 if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "(linux|android)_[^_]+_[^_]+" )
@@ -59,6 +80,16 @@ if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "(linux|android)_[^_]+_[^_]+" )
             -DUNSAFE_STAT_OK
             -D_GNU_SOURCE
             -DSO_MAJOR_VERSION=5 )
+elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
+    set ( ${PROJECT_NAME}_PLATFORM_DEFINITIONS
+            -DFRONTEND 
+            -DWIN32
+            -D_WINDOWS
+            -D_CRT_SECURE_NO_DEPRECATE
+            -DENABLE_THREAD_SAFETY
+            # see: https://stackoverflow.com/a/16257999/314015
+            # todo: check not broken
+            -D_dosmaperr=_dosmaperr_DISABLE )
 endif ( )
 
 # copy headers
@@ -114,5 +145,12 @@ target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE
         ${${PROJECT_NAME}_SOURCE_DIR}
         ${${PROJECT_NAME}_INCLUDE_DIR}
         ${${PROJECT_NAME}_PLATFORM_INCLUDE_DIR} )
+        
+if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
+    target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE 
+            ${${PROJECT_NAME}_INCLUDE_DIR}/port/win32
+            ${${PROJECT_NAME}_INCLUDE_DIR}/port/win32_msvc
+            ${${PROJECT_NAME}_INCLUDE_DIR}/../port )
+endif ( ) 
 
 target_compile_definitions ( ${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_PLATFORM_DEFINITIONS} )
