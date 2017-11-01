@@ -46,6 +46,11 @@ elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "android_armeabi_[^_]+" )
             ${CMAKE_CURRENT_LIST_DIR}/../include_android_armeabi )
     set ( ${PROJECT_NAME}_PLATFORM_SRC
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/snprintf.c )
+elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "android_i386_[^_]+" )
+    set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
+            ${CMAKE_CURRENT_LIST_DIR}/../include_android_i386 )
+    set ( ${PROJECT_NAME}_PLATFORM_SRC
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/snprintf.c )
 elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_i386_msvc" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_windows_i386 )
