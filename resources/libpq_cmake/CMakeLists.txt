@@ -57,9 +57,15 @@ elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_i386_msvc" )
 elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_amd64_msvc" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_windows_amd64 )           
+elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "macosx_amd64_clang" )
+    set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
+            ${CMAKE_CURRENT_LIST_DIR}/../include_macosx_amd64 )
 endif ( )
 
-if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
+if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "(linux|android)_[^_]+_[^_]+" )
+    set ( ${PROJECT_NAME}_PLATFORM_SRC
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/strlcpy.c )
+elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
     set ( ${PROJECT_NAME}_PLATFORM_SRC
             ${${PROJECT_NAME}_SOURCE_DIR}/win32.c
             ${${PROJECT_NAME}_SOURCE_DIR}/pthread-win32.c
@@ -71,6 +77,7 @@ if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/dirmod.c
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/pgsleep.c
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/open.c
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/strlcpy.c
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/system.c
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/win32error.c
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/win32setlocale.c ) 
@@ -95,6 +102,13 @@ elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
             # see: https://stackoverflow.com/a/16257999/314015
             # todo: check not broken
             -D_dosmaperr=_dosmaperr_DISABLE )
+elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "macosx_amd64_clang" )
+    set ( ${PROJECT_NAME}_PLATFORM_DEFINITIONS
+            -D_REENTRANT
+            -D_THREAD_SAFE
+            -D_POSIX_PTHREAD_SEMANTICS
+            -DFRONTEND
+            -DUNSAFE_STAT_OK )
 endif ( )
 
 # copy headers
@@ -138,7 +152,6 @@ add_library ( ${PROJECT_NAME} STATIC
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/pgstrcasecmp.c
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/pqsignal.c
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/thread.c
-        ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/strlcpy.c
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/getpeereid.c
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/backend/libpq/ip.c
         ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/backend/libpq/md5.c
