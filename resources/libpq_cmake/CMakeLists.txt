@@ -39,17 +39,21 @@ else ( )
 endif ( )
 
 if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "linux_amd64_[^_]+" )
+    set ( ${PROJECT_NAME}_PLATFORM_SRC
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/strlcpy.c )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_linux_amd64 )
 elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "android_armeabi_[^_]+" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_android_armeabi )
     set ( ${PROJECT_NAME}_PLATFORM_SRC
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/strlcpy.c
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/snprintf.c )
 elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "android_i386_[^_]+" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_android_i386 )
     set ( ${PROJECT_NAME}_PLATFORM_SRC
+            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/strlcpy.c
             ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/snprintf.c )
 elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_i386_msvc" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
@@ -62,10 +66,7 @@ elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "macosx_amd64_clang" )
             ${CMAKE_CURRENT_LIST_DIR}/../include_macosx_amd64 )
 endif ( )
 
-if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "(linux|android)_[^_]+_[^_]+" )
-    set ( ${PROJECT_NAME}_PLATFORM_SRC
-            ${${PROJECT_NAME}_SOURCE_DIR}/../../../src/port/strlcpy.c )
-elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
+if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
     set ( ${PROJECT_NAME}_PLATFORM_SRC
             ${${PROJECT_NAME}_SOURCE_DIR}/win32.c
             ${${PROJECT_NAME}_SOURCE_DIR}/pthread-win32.c
