@@ -14,8 +14,13 @@
 
 cmake_minimum_required ( VERSION 2.8.12 )
 project ( pq C )
-set ( ${PROJECT_NAME}_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../../postgresql/src/interfaces/libpq )
-set ( ${PROJECT_NAME}_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/../../postgresql/src/include )
+
+if ( NOT DEFINED ${PROJECT_NAME}_LOOKASIDE_DIR )
+    set ( ${PROJECT_NAME}_LOOKASIDE_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../lookaside_postgresql CACHE INTERNAL "" )
+endif ( )
+
+set ( ${PROJECT_NAME}_SOURCE_DIR ${${PROJECT_NAME}_LOOKASIDE_DIR}/src/interfaces/libpq )
+set ( ${PROJECT_NAME}_INCLUDE_DIR ${${PROJECT_NAME}_LOOKASIDE_DIR}/src/include )
 
 # standalone build
 if ( NOT DEFINED STATICLIB_TOOLCHAIN )
@@ -60,7 +65,7 @@ elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_i386_msvc" )
             ${CMAKE_CURRENT_LIST_DIR}/../include_windows_i386 )
 elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_amd64_msvc" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
-            ${CMAKE_CURRENT_LIST_DIR}/../include_windows_amd64 )           
+            ${CMAKE_CURRENT_LIST_DIR}/../include_windows_amd64 )
 elseif ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "macosx_amd64_clang" )
     set ( ${PROJECT_NAME}_PLATFORM_INCLUDE_DIR
             ${CMAKE_CURRENT_LIST_DIR}/../include_macosx_amd64 )
@@ -164,7 +169,7 @@ target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE
         ${${PROJECT_NAME}_SOURCE_DIR}
         ${${PROJECT_NAME}_INCLUDE_DIR}
         ${${PROJECT_NAME}_PLATFORM_INCLUDE_DIR} )
-        
+
 if ( ${PROJECT_NAME}_TOOLCHAIN MATCHES "windows_[^_]+_msvc" )
     target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE 
             ${${PROJECT_NAME}_INCLUDE_DIR}/port/win32
